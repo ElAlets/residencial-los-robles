@@ -3,23 +3,23 @@ import { Link } from "react-router-dom";
 function Dashboard() {
 
   return (
-
     <div>
 
-      <h1>Panel Residencial Los Robles</h1>
+      <h1>Panel de Administración</h1>
 
-      <nav>
+      <div>
+        <h3>Opciones</h3>
 
-        <Link to="/residents">Residents</Link>
-        <br />
-        <Link to="/announcements">Announcements</Link>
-        <br />
-        <Link to="/payments">Payments</Link>
+        <ul>
+          <li><Link to="/residents">Ver residentes</Link></li>
+          <li><Link to="/announcements">Ver anuncios</Link></li>
+          <li><Link to="/payments">Registrar pagos</Link></li>
+          <li><Link to="/emergency">Servicios de emergencia</Link></li>
+        </ul>
 
-      </nav>
+      </div>
 
     </div>
-
   );
 
 }
