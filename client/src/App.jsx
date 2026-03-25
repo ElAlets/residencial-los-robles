@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Residents from "./pages/Residents";
 import Announcements from "./pages/Announcements";
+import Payments from "./pages/Payments";
+        import Emergency from "./pages/Emergency";
 
 function App() {
 
@@ -21,6 +23,9 @@ function App() {
 
         <Route path="/announcements" element={<Announcements />} />
 
+        <Route path="/payments" element={<Payments />} />
+
+        <Route path="/emergency" element={<Emergency />} />
       </Routes>
 
     </BrowserRouter>
