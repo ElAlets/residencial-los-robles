@@ -1,36 +1,51 @@
+// server.js
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
-const announcementRoutes = require("./routes/announcementRoutes");
-
-app.use("/api/announcements", announcementRoutes);
-
-const authRoutes = require("./routes/authRoutes");
-const residentRoutes = require("./routes/residentRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
-
 const app = express();
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/residents", residentRoutes);
-app.use("/api/payments", paymentRoutes);
+// Constante para el prefijo de la API
+const API = "/api";
 
-const PORT = 5000;
+// Rutas
+const authRoutes = require("./routes/authRoutes");
+const residentRoutes = require("./routes/residentRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+const announcementRoutes = require("./routes/announcementRoutes");
+const emergencyRoutes = require("./routes/emergencyRoutes");
 
+app.use(`${API}/auth`, authRoutes);
+app.use(`${API}/residents`, residentRoutes);
+app.use(`${API}/payments`, paymentRoutes);
+app.use(`${API}/announcements`, announcementRoutes);
+app.use(`${API}/emergency`, emergencyRoutes);
+
+// Ruta de prueba
 app.get("/", (req, res) => {
   res.json({
-    message: "API Residencial Los Robles funcionando"
+    message: "API Residencial Los Robles funcionando 🚀"
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Middleware de manejo de errores global 
+// ¡Importante! Siempre debe ir DESPUÉS de todas las rutas
+app.use((err, req, res, next) => {
+  console.error("❌ Error detectado:", err.stack);
+  res.status(500).json({ 
+    message: "Error interno del servidor",
+    error: err.message 
+  });
 });
 
-const emergencyRoutes = require("./routes/emergencyRoutes");
+// Servidor
+const PORT = process.env.PORT || 5000;
 
-app.use("/api/emergency", emergencyRoutes);
+app.listen(PORT, () => {
+  // Log claro y visible (Mejora Pro 3)
+  console.log(`🚀 Server running on port ${PORT}`);
+});

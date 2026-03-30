@@ -1,17 +1,18 @@
+// server/routes/emergencyRoutes.js
 const express = require("express");
 const router = express.Router();
-const db = require("../config/db");
 
-router.get("/", (req, res) => {
+const emergencyController = require("../controllers/emergencyController");
 
-  db.query("SELECT * FROM emergency_services", (err, results) => {
+// ==============================
+// RUTAS PROTEGIDAS
+// ==============================
 
-    if (err) return res.status(500).json(err);
-
-    res.json(results);
-
-  });
-
-});
+/**
+ * @route   GET /api/emergency
+ * @desc    Obtener directorio de servicios de emergencia
+ * @access  Público
+ */
+router.get("/", emergencyController.getEmergencyServices);
 
 module.exports = router;

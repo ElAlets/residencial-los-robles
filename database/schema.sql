@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `residencial_los_robles` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `residencial_los_robles`;
 -- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: residencial_los_robles
@@ -28,10 +30,11 @@ CREATE TABLE `announcements` (
   `content` text NOT NULL,
   `created_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `created_by` (`created_by`),
   CONSTRAINT `announcements_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,13 +47,12 @@ DROP TABLE IF EXISTS `board_members`;
 CREATE TABLE `board_members` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL,
-  `role` varchar(100) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL,
+  `role` varchar(100) NOT NULL,
+  `phone` varchar(20) NOT NULL,
   `email` varchar(150) DEFAULT NULL,
-  `start_date` date DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,12 +65,12 @@ DROP TABLE IF EXISTS `emergency_services`;
 CREATE TABLE `emergency_services` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL,
-  `service_type` enum('hospital','police','fire_department','civil_protection') DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL,
+  `service_type` enum('hospital','police','fire_department','civil_protection') NOT NULL,
+  `phone` varchar(20) NOT NULL,
   `address` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,13 +82,18 @@ DROP TABLE IF EXISTS `meetings`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `meetings` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(200) DEFAULT NULL,
+  `title` varchar(200) NOT NULL,
   `description` text,
-  `meeting_date` datetime DEFAULT NULL,
-  `location` varchar(200) DEFAULT NULL,
+  `meeting_date` datetime NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `status` enum('scheduled','completed','cancelled') NOT NULL DEFAULT 'scheduled',
+  `created_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  CONSTRAINT `meetings_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,16 +105,16 @@ DROP TABLE IF EXISTS `notifications`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notifications` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `resident_id` int DEFAULT NULL,
-  `title` varchar(200) DEFAULT NULL,
-  `message` text,
-  `type` enum('payment_reminder','announcement','emergency') DEFAULT NULL,
-  `sent_via` enum('email','sms','system') DEFAULT NULL,
+  `user_id` int NOT NULL,
+  `type` enum('payment','announcement','emergency','meeting','other') NOT NULL DEFAULT 'other',
+  `title` varchar(150) NOT NULL,
+  `message` text NOT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `resident_id` (`resident_id`),
-  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `residents` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,15 +128,17 @@ CREATE TABLE `payments` (
   `id` int NOT NULL AUTO_INCREMENT,
   `resident_id` int NOT NULL,
   `amount` decimal(10,2) NOT NULL,
-  `payment_date` date DEFAULT NULL,
-  `method` enum('cash','transfer','simulated_online') DEFAULT NULL,
-  `status` enum('paid','pending') DEFAULT 'pending',
-  `reference` varchar(100) DEFAULT NULL,
+  `payment_date` date NOT NULL,
+  `method` enum('cash','transfer','simulated_online') NOT NULL,
+  `status` enum('paid','pending') NOT NULL DEFAULT 'pending',
+  `reference_number` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `resident_id` (`resident_id`),
-  CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `residents` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`resident_id`) REFERENCES `residents` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `payments_chk_1` CHECK ((`amount` >= 0))
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,15 +151,17 @@ DROP TABLE IF EXISTS `residents`;
 CREATE TABLE `residents` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `address` varchar(255) DEFAULT NULL,
+  `address` varchar(255) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
-  `house_number` varchar(20) DEFAULT NULL,
-  `status` enum('active','inactive') DEFAULT 'active',
+  `house_number` varchar(20) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
+  UNIQUE KEY `user_id` (`user_id`),
+  KEY `user_id_2` (`user_id`),
   CONSTRAINT `residents_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,11 +176,12 @@ CREATE TABLE `users` (
   `name` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','resident') DEFAULT 'resident',
+  `role` enum('admin','resident') NOT NULL DEFAULT 'resident',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -181,4 +193,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-03-05 18:27:26
+-- Dump completed on 2026-03-29 16:45:29
