@@ -1,4 +1,4 @@
-# 🏡 Sistema de Gestión Comunitaria – Residencial Los Robles
+#Sistema de Gestión Comunitaria – Residencial Los Robles
 
 > Aplicación web Full-Stack diseñada para la administración integral, comunicación y finanzas de la colonia **Residencial Los Robles**.
 
@@ -6,49 +6,49 @@ El sistema busca modernizar y agilizar la comunicación entre los residentes y l
 
 ---
 
-## 🎯 Problemática que resuelve
+##Problemática que resuelve
 
 Este sistema nace como una solución tecnológica a los siguientes desafíos comunes en la administración condominal:
-- ❌ Errores, pérdidas o desorden en el registro de pagos manuales.
-- ❌ Falta de comunicación efectiva y oficial entre la directiva y los vecinos.
-- ❌ Dificultad para contactar rápidamente a la mesa directiva.
-- ❌ Acceso limitado o nulo a información de emergencia y reglamentos.
+- Errores, pérdidas o desorden en el registro de pagos manuales.
+- Falta de comunicación efectiva y oficial entre la directiva y los vecinos.
+- Dificultad para contactar rápidamente a la mesa directiva.
+- Acceso limitado o nulo a información de emergencia y reglamentos.
 
 ---
 
-## 🚀 Funcionalidades Principales
+##Funcionalidades Principales
 
-### 👤 Gestión de Usuarios y Seguridad
+###Gestión de Usuarios y Seguridad
 - Registro e inicio de sesión seguro.
 - Autenticación mediante **JSON Web Tokens (JWT)** y contraseñas encriptadas (Bcrypt).
 - Control de Accesos Basado en Roles (RBAC):
-  - 🧑 **Residentes:** Acceso a historial de pagos, emergencias y comunicados.
-  - 🛡️ **Administradores:** Control total del sistema, gestión de usuarios y finanzas.
+  - **Residentes:** Acceso a historial de pagos, emergencias y comunicados.
+  - **Administradores:** Control total del sistema, gestión de usuarios y finanzas.
 
-### 🏠 Padrón de Residentes
+###Padrón de Residentes
 - Directorio oficial y privado.
 - Registro de información de contacto (Dirección, Teléfono, Número de Casa).
 - Solo visible para la mesa directiva.
 
-### 💳 Sistema de Pagos y Finanzas
+###Sistema de Pagos y Finanzas
 - Registro de cuotas de mantenimiento.
 - Historial completo de transacciones por usuario.
 - Validación de montos y métodos de pago (Efectivo, Transferencia, Online).
 
-### 📢 Panel de Comunicados
+###Panel de Comunicados
 - Publicación de avisos oficiales por parte de la administración.
 - Historial de anuncios para mantener a la comunidad informada.
 
-### 🚨 Directorio de Emergencias
+###Directorio de Emergencias
 - Acceso rápido a servicios vitales (Hospitales, Policía, Bomberos, Protección Civil).
 - Botones de llamada directa (Click-to-call) optimizados para móviles.
 
-### 🔔 Sistema de Notificaciones *(En desarrollo / opcional)*
+###Sistema de Notificaciones *(En desarrollo)*
 - Alertas por correo/SMS para recordatorios de pago y avisos de servicios.
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+##Tecnologías Utilizadas
 
 **Frontend (Cliente):**
 - React 18 (Vite)
@@ -66,7 +66,7 @@ Este sistema nace como una solución tecnológica a los siguientes desafíos com
 
 ---
 
-## 📁 Estructura del proyect
+##Estructura del proyect
 residencial-los-robles/
 ├── client/                 # Aplicación React (Vite)
 │   ├── src/
@@ -81,7 +81,7 @@ residencial-los-robles/
     ├── models/             # Consultas SQL y modelos
     └── routes/             # Endpoints de la API REST
 
-⚙️ Instalación
+Instalación
 
 Clonar repositorio
 Bash
@@ -101,7 +101,7 @@ cd client
 npm install
 npm run dev
 
-🌐 Variables de entorno
+Variables de entorno
 Crea un archivo .env en la carpeta /server con la siguiente estructura:
 
 Fragmento de código
