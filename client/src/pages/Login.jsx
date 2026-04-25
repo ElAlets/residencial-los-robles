@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -25,7 +26,6 @@ function Login() {
 
       // 🚀 Redirigir sin recargar
       navigate("/dashboard");
-
     } catch (error) {
       console.error(error);
       // Mostramos error (podríamos leer error.response.data.message si viene del backend)
@@ -65,8 +65,8 @@ function Login() {
           style={styles.input}
         />
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           style={styles.button}
           disabled={isLoading} // Se deshabilita si está cargando
         >
@@ -75,6 +75,12 @@ function Login() {
 
         {errorMsg && <p style={styles.error}>❌ {errorMsg}</p>}
       </form>
+      <p style={{ marginTop: "15px" }}>
+        ¿No tienes cuenta?{" "}
+        <Link to="/register" style={{ color: "#0984e3", fontWeight: "bold" }}>
+          Regístrate
+        </Link>
+      </p>
     </div>
   );
 }
@@ -87,11 +93,11 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     height: "100vh",
-    backgroundColor: "#f5f6fa"
+    backgroundColor: "#f5f6fa",
   },
   subtitle: {
     color: "#7f8c8d",
-    marginBottom: "20px"
+    marginBottom: "20px",
   },
   form: {
     display: "flex",
@@ -101,13 +107,13 @@ const styles = {
     backgroundColor: "white",
     padding: "30px",
     borderRadius: "8px",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
   },
   input: {
     padding: "10px",
     borderRadius: "4px",
     border: "1px solid #ccc",
-    fontSize: "16px"
+    fontSize: "16px",
   },
   button: {
     padding: "10px",
@@ -117,14 +123,14 @@ const styles = {
     borderRadius: "4px",
     fontSize: "16px",
     cursor: "pointer",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   error: {
     color: "#e74c3c",
     fontSize: "14px",
     textAlign: "center",
-    margin: 0
-  }
+    margin: 0,
+  },
 };
 
 export default Login;

@@ -22,7 +22,7 @@ async function probarConexion() {
     console.log("✅ Conexión exitosa a la base de datos MySQL");
     connection.release(); // Liberamos la conexión de vuelta al pool
   } catch (error) {
-    console.error("❌ Error conectando a la base de datos:", error.message);
+    console.error("❌ Error conectando a la base de datos COMPLETO:", error);
   }
 }
 

@@ -71,3 +71,12 @@ exports.getMyProfile = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getAllResidents = async (req, res, next) => {
+  try {
+    const residents = await Resident.getResidents();
+    res.json(residents);
+  } catch (error) {
+    next(error);
+  }
+};

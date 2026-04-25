@@ -1,5 +1,11 @@
 // client/src/App.jsx
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 
 // Páginas
 import Login from "./pages/Login";
@@ -9,6 +15,7 @@ import Announcements from "./pages/Announcements";
 import Payments from "./pages/Payments";
 import Emergency from "./pages/Emergency";
 import Navbar from "./components/Navbar";
+import Register from "./pages/Register";
 
 // 🔐 Protección para rutas privadas
 const ProtectedLayout = () => {
@@ -22,35 +29,42 @@ const ProtectedLayout = () => {
   // Si HAY token, renderizamos el Layout (Aquí luego podrías poner tu Navbar/Sidebar)
   // El <Outlet /> es donde se inyectarán las páginas hijas (Dashboard, Residents, etc.)
   return (
-  <div className="app-layout">
-    <Navbar />
-    <main className="main-content">
-      <Outlet />
-    </main>
-  </div>
-);
+    <div className="app-layout">
+      <Navbar />
+      <main className="main-content">
+        <Outlet />
+      </main>
+    </div>
+  );
 };
 
 // 👤 Protección para rutas públicas (Login)
 const PublicRoute = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
+  return token ? <Navigate to="/dashboard" replace /> : children;
   // Si ya tiene token, que no vea el login, mándalo al dashboard
-  return user ? <Navigate to="/dashboard" replace /> : children;
 };
-
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-
-        {/* RUTA PÚBLICA */}
-        <Route 
-          path="/" 
+        {/* RUTAS PÚBLICAS */}
+        <Route
+          path="/"
           element={
             <PublicRoute>
               <Login />
             </PublicRoute>
-          } 
+          }
+        />
+
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
         />
 
         {/* RUTAS PRIVADAS (Envueltas en el ProtectedLayout) */}
@@ -64,7 +78,6 @@ function App() {
 
         {/* 404 NOT FOUND */}
         <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
-
       </Routes>
     </BrowserRouter>
   );
