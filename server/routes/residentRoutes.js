@@ -26,4 +26,28 @@ router.post("/", authMiddleware, adminMiddleware, residentController.createResid
 // Obtener mi propio perfil
 router.get("/me", authMiddleware, residentController.getMyProfile);
 
+/**
+ * @route   PUT /api/residents/:id
+ * @desc    Actualizar residente
+ * @access  Privado (Solo Administradores)
+ */
+router.put(
+  "/:id",
+  authMiddleware,
+  adminMiddleware,
+  residentController.updateResident
+);
+
+/**
+ * @route   DELETE /api/residents/:id
+ * @desc    Eliminar residente
+ * @access  Privado (Solo Administradores)
+ */
+router.delete(
+  "/:id",
+  authMiddleware,
+  adminMiddleware,
+  residentController.deleteResident
+);
+
 module.exports = router;

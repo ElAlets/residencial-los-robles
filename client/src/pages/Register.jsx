@@ -6,18 +6,20 @@ function Register() {
     name: "",
     email: "",
     password: "",
-    role: "resident"
+    role: "resident",
   });
 
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     setErrorMsg("");
   };
@@ -26,24 +28,42 @@ function Register() {
     e.preventDefault();
     setIsLoading(true);
 
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    // Validación password mínima
+    if (form.password.length < 6) {
+      setErrorMsg("La contraseña debe tener mínimo 6 caracteres");
+      setIsLoading(false);
+      return;
+    }
+
+    // Confirmar contraseña
+    if (form.password !== confirmPassword) {
+      setErrorMsg("Las contraseñas no coinciden");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(form)
+        body: JSON.stringify(form),
       });
 
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message);
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      // ✅ Registro exitoso
+      setSuccessMsg("✅ Cuenta creada correctamente. Redirigiendo al login...");
 
-      navigate("/dashboard");
-
+      setTimeout(() => {
+        navigate("/");
+      }, 1800);
     } catch (error) {
       setErrorMsg(error.message || "Error al registrarse");
     } finally {
@@ -82,17 +102,22 @@ function Register() {
           required
           style={styles.input}
         />
-
-       {/* Solo para demo
-        <select name="role" onChange={handleChange} style={styles.input}>
-          <option value="resident">Residente</option>
-          <option value="admin">Administrador</option>
-        </select> */}
+        <input
+          type="password"
+          placeholder="Confirmar contraseña"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          style={styles.input}
+        />
 
         <button type="submit" style={styles.button} disabled={isLoading}>
-          {isLoading ? "Registrando..." : "Registrarse"}
+          {isLoading ? "⏳ Registrando..." : "Crear Cuenta"}
         </button>
 
+        {errorMsg && <p style={styles.error}>❌ {errorMsg}</p>}
+
+        {successMsg && <p style={styles.success}>{successMsg}</p>}
         {errorMsg && <p style={styles.error}>❌ {errorMsg}</p>}
       </form>
 
@@ -113,11 +138,11 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     height: "100vh",
-    backgroundColor: "#f5f6fa"
+    backgroundColor: "#f5f6fa",
   },
   subtitle: {
     color: "#7f8c8d",
-    marginBottom: "20px"
+    marginBottom: "20px",
   },
   form: {
     display: "flex",
@@ -127,35 +152,42 @@ const styles = {
     backgroundColor: "white",
     padding: "30px",
     borderRadius: "8px",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
   },
   input: {
     padding: "10px",
     borderRadius: "4px",
     border: "1px solid #ccc",
-    fontSize: "16px"
+    fontSize: "16px",
   },
   button: {
     padding: "10px",
-    backgroundColor: "#0984e3",
+    backgroundColor: "#9b59b6",
     color: "white",
     border: "none",
     borderRadius: "4px",
     fontSize: "16px",
     cursor: "pointer",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   error: {
     color: "#e74c3c",
     fontSize: "14px",
     textAlign: "center",
-    margin: 0
+    margin: 0,
+  },
+  success: {
+    color: "#27ae60",
+    fontSize: "14px",
+    textAlign: "center",
+    margin: 0,
+    fontWeight: "bold",
   },
   link: {
     color: "#0984e3",
     fontWeight: "bold",
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 };
 
 export default Register;

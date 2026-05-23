@@ -80,3 +80,53 @@ exports.getAllResidents = async (req, res, next) => {
     next(error);
   }
 };
+  // ==============================
+// ACTUALIZAR RESIDENTE
+// ==============================
+exports.updateResident = async (req, res, next) => {
+  try {
+    const residentId = Number(req.params.id);
+
+    const {
+      address,
+      phone,
+      house_number,
+      status
+    } = req.body;
+
+    await Resident.updateResident(
+      residentId,
+      {
+        address,
+        phone,
+        house_number,
+        status
+      }
+    );
+
+    res.json({
+      message: "Resident updated successfully"
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ==============================
+// ELIMINAR RESIDENTE
+// ==============================
+exports.deleteResident = async (req, res, next) => {
+  try {
+    const residentId = Number(req.params.id);
+
+    await Resident.deleteResident(residentId);
+
+    res.json({
+      message: "Resident deleted successfully"
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};

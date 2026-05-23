@@ -5,7 +5,12 @@ function Navbar() {
   const navigate = useNavigate();
 
   // 1. Obtenemos el usuario de forma segura (si no existe, user será null)
-  const user = JSON.parse(localStorage.getItem("user"));
+  const userData = localStorage.getItem("user");
+
+const user =
+  userData && userData !== "undefined"
+    ? JSON.parse(userData)
+    : null;
 
   // 🔐 Logout: Limpiamos la casa y cerramos la puerta
   const handleLogout = () => {

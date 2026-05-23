@@ -16,6 +16,7 @@ import Payments from "./pages/Payments";
 import Emergency from "./pages/Emergency";
 import Navbar from "./components/Navbar";
 import Register from "./pages/Register";
+import RoleRoute from "./components/RoleRoute";
 
 // 🔐 Protección para rutas privadas
 const ProtectedLayout = () => {
@@ -69,13 +70,26 @@ function App() {
 
         {/* RUTAS PRIVADAS (Envueltas en el ProtectedLayout) */}
         <Route element={<ProtectedLayout />}>
+          {/* Dashboard → cualquiera logueado */}
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/residents" element={<Residents />} />
+
+          {/* Solo Admin */}
+          <Route
+            path="/residents"
+            element={
+              <RoleRoute allowedRoles={["admin"]}>
+                <Residents />
+              </RoleRoute>
+            }
+          />
+
+          {/* Ambos roles */}
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/payments" element={<Payments />} />
           <Route path="/emergency" element={<Emergency />} />
         </Route>
 
+        
         {/* 404 NOT FOUND */}
         <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
       </Routes>

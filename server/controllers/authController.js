@@ -4,36 +4,49 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 // REGISTER
+// REGISTER
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
-    // 1. Validación de campos y longitud (Mejora Pro++)
+    // Validaciones
     if (!name?.trim() || !email?.trim() || !password) {
-      return res.status(400).json({ message: "Name, email and password are required" });
+      return res.status(400).json({
+        message: "Name, email and password are required",
+      });
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
+      return res.status(400).json({
+        message: "Password must be at least 6 characters",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.createUser({
+    // Seguridad:
+    // Solo permitir admin si viene de un admin autenticado
+    const safeRole = role === "admin" ? "resident" : "resident";
+
+    const newUser = await User.createUser({
       name: name.trim(),
       email: email.trim().toLowerCase(),
       password: hashedPassword,
-      role: 'resident'
+      role: "resident",
     });
 
-    res.status(201).json({ message: "User created successfully" });
-
+    res.status(201).json({
+      message: "User created successfully",
+      user: newUser,
+    });
   } catch (error) {
-    // 2. Manejo controlado de Email duplicado (Mejora Pro++)
     if (error.code === "ER_DUP_ENTRY") {
-      return res.status(400).json({ message: "Email already exists" });
+      return res.status(400).json({
+        message: "Email already exists",
+      });
     }
-    next(error); // Otros errores se van al manejador global
+
+    next(error);
   }
 };
 
@@ -43,7 +56,9 @@ exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email?.trim() || !password) {
-      return res.status(400).json({ message: "Email and password are required" });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
     }
 
     const user = await User.findByEmail(email.trim().toLowerCase());
@@ -62,14 +77,13 @@ exports.login = async (req, res, next) => {
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "8h" }
+      { expiresIn: "8h" },
     );
 
     res.json({
       token,
-      user: { id: user.id, name: user.name, role: user.role }
+      user: { id: user.id, name: user.name, role: user.role },
     });
-
   } catch (error) {
     next(error);
   }
