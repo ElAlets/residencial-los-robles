@@ -259,7 +259,7 @@ Contraseña:
 
 **Alejandro Barragán Pérez**
 
-Proyecto académico desarrollado para la materia de **Gestor de Proyectos / SCRUM**.
+Proyecto académico desarrollado para la materia de **PROYECTO II**.
 
 ---
 
